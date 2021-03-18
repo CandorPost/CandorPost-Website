@@ -3,6 +3,9 @@ package io.github.candorpost.web
 import io.github.candorpost.web.client.ControlPanel
 import io.github.candorpost.web.resource.ResourceLoader
 import io.github.candorpost.web.resource.StoryLoader
+import io.github.candorpost.web.route.DebugRouter
+import io.github.candorpost.web.route.ErrorRouter
+import io.github.candorpost.web.route.StoryRouter
 import io.github.candorpost.web.util.NOT_FOUND_404
 import io.javalin.Javalin
 import joptsimple.OptionParser
@@ -42,18 +45,9 @@ fun main(args: Array<String>) {
 	val port = optionSet.valueOf(portSpec).toInt()
 	ResourceLoader.addListener(StoryLoader)
 	ResourceLoader.reload()
-	app = Javalin.create().start(port)
-	app.get("/") {
-		logger.info("Received request")
-	}
-	app.get("/api/stories/:name") {
-		val name = it.pathParam("name")
-		val html = StoryLoader.name2html[name]
-		Optional.ofNullable(html).ifPresentOrElse( { str -> it.html(str) }, { it.status(404) })
-		if (html != null) it.html(html)
-		else it.status(NOT_FOUND_404)
-	}
-	app.error(404) {
-		it.html("<h1>404 Not Found</h1>")
-	}
+	app = Javalin.create()
+	DebugRouter.accept(app)
+	ErrorRouter.accept(app)
+	StoryRouter.accept(app)
+	app.start(port)
 }
