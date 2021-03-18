@@ -12,6 +12,8 @@ import joptsimple.OptionParser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.GraphicsEnvironment
+import java.net.HttpURLConnection
+import java.net.URL
 
 private lateinit var app: Javalin
 val logger: Logger = LoggerFactory.getLogger("CandorPost")
@@ -28,6 +30,7 @@ fun main(args: Array<String>) {
 	val guiSpec = parser.accepts("gui", "Shows the control panel")
 	val portSpec = parser.accepts("port", "Sets the server port").withRequiredArg().ofType(Int::class.java).defaultsTo(7000)
 	val debugSpec = parser.accepts("debug", "Enabled verbose debug mode")
+	val keepAliveSpec = parser.accepts("keepAlive", "Thread that calls the api every 59 seconds")
 	val optionSet = parser.parse(*args)
 	if (optionSet.has(helpSpec)) {
 		parser.printHelpOn(System.out)
@@ -42,6 +45,17 @@ fun main(args: Array<String>) {
 		}.run()
 	}
 	val port = optionSet.valueOf(portSpec)
+	if (optionSet.has(keepAliveSpec)) {
+		Thread {
+			val url = URL("http://localhost:$port/api/routes")
+			while (true) {
+				Thread.sleep(59 * 1000)
+				val conn = (url.openConnection() as HttpURLConnection)
+				conn.connect()
+				conn.disconnect()
+			}
+		}.run()
+	}
 	JavalinJackson.configure(objectMapper)
 	ResourceLoader.addListener(StoryLoader)
 	ResourceLoader.addListener(PostLoader)
