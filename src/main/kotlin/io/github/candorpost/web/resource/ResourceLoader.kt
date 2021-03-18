@@ -12,7 +12,7 @@ object ResourceLoader {
 
 	@JvmStatic
 	fun reload() {
-		val resourceDir = Paths.get(".").resolve("Pages")
+		val resourceDir = Paths.get(".").resolve("web")
 		listeners.forEach { it.reload(resourceDir) }
 	}
 }
