@@ -1,0 +1,42 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+group = "io.github.candorpost"
+version = "0.1.0"
+
+logger.lifecycle("Building News: $version")
+
+dependencies {
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
+    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-kotlin', version: '2.12.2'
+    implementation 'org.tautua.markdownpapers:markdownpapers-core:1.4.1'
+    implementation 'net.minecrell:terminalconsoleappender:1.2.0'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
+    implementation 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
+    implementation 'io.javalin:javalin:3.13.4'
+    implementation platform('org.jetbrains.kotlin:kotlin-bom')
+    implementation 'org.jetbrains.kotlin:kotlin-reflect' 
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'com.google.guava:guava:29.0-jre'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+}
+
+File runningDir = project.rootDir.toPath().resolve("run").toFile()
+runningDir.mkdirs()
+tasks.run.workingDir = runningDir
+
+application {
+    mainClass = 'io.github.candorpost.web.AppKt'
+}
