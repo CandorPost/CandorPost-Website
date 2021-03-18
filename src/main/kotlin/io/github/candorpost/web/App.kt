@@ -1,14 +1,11 @@
 package io.github.candorpost.web
 
 import io.github.candorpost.web.client.ControlPanel
-import io.github.candorpost.web.resource.PostLoader
+import io.github.candorpost.web.resource.md.PostLoader
 import io.github.candorpost.web.resource.ResourceLoader
-import io.github.candorpost.web.resource.StoryLoader
+import io.github.candorpost.web.resource.md.StoryLoader
 import io.github.candorpost.web.resource.objectMapper
-import io.github.candorpost.web.route.DebugRouter
-import io.github.candorpost.web.route.ErrorRouter
-import io.github.candorpost.web.route.PostRouter
-import io.github.candorpost.web.route.StoryRouter
+import io.github.candorpost.web.route.*
 import io.javalin.Javalin
 import io.javalin.plugin.json.JavalinJackson
 import joptsimple.OptionParser
@@ -29,7 +26,7 @@ fun main(args: Array<String>) {
 	val parser = OptionParser()
 	val helpSpec = parser.accepts("help", "Shows this menu").forHelp()
 	val guiSpec = parser.accepts("gui", "Shows the control panel")
-	val portSpec = parser.accepts("port", "Sets the server port").withRequiredArg().defaultsTo("7000")
+	val portSpec = parser.accepts("port", "Sets the server port").withRequiredArg().ofType(Int::class.java).defaultsTo(7000)
 	val debugSpec = parser.accepts("debug", "Enabled verbose debug mode")
 	val optionSet = parser.parse(*args)
 	if (optionSet.has(helpSpec)) {
@@ -44,12 +41,13 @@ fun main(args: Array<String>) {
 			ControlPanel()
 		}.run()
 	}
-	val port = optionSet.valueOf(portSpec).toInt()
+	val port = optionSet.valueOf(portSpec)
 	JavalinJackson.configure(objectMapper)
 	ResourceLoader.addListener(StoryLoader)
 	ResourceLoader.addListener(PostLoader)
 	ResourceLoader.reload()
 	app = Javalin.create()
+	ApiRoutesRouter.accept(app)
 	DebugRouter.accept(app)
 	ErrorRouter.accept(app)
 	StoryRouter.accept(app)

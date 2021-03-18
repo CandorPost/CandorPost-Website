@@ -1,15 +1,19 @@
-package io.github.candorpost.web.resource
+package io.github.candorpost.web.resource.md
 
 import com.fasterxml.jackson.databind.ObjectReader
 import io.github.candorpost.web.debugMode
 import io.github.candorpost.web.logger
+import io.github.candorpost.web.resource.ReloadListener
+import io.github.candorpost.web.resource.markdown
+import io.github.candorpost.web.resource.objectMapper
 import java.io.StringWriter
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.streams.toList
 
 abstract class AbstractMarkdownLoader(private val dirName: String, private val thingName: String): ReloadListener {
-	val name2Entry: MutableMap<String, Entry> = HashMap()
+	val name2Entry: MutableMap<String, Entry> = ConcurrentHashMap()
 	private val objectReader: ObjectReader = objectMapper.readerFor(Config::class.java)
 
 	override fun reload(resourceDir: Path) {
@@ -42,6 +46,10 @@ abstract class AbstractMarkdownLoader(private val dirName: String, private val t
 					}
 				}
 			}
+	}
+
+	fun getCategories(): List<String> {
+		return this.name2Entry.values.stream().map { it.config.category }.toList()
 	}
 
 	data class Config(val category: String, val tags: List<String>, val heading: String)

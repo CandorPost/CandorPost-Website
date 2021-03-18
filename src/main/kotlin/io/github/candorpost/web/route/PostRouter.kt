@@ -1,16 +1,17 @@
 package io.github.candorpost.web.route
 
-import io.github.candorpost.web.resource.PostLoader
-import io.github.candorpost.web.util.JSON
-import io.github.candorpost.web.util.NOT_FOUND_404
-import io.github.candorpost.web.util.createError
+import io.github.candorpost.web.resource.md.PostLoader
+import io.github.candorpost.web.util.*
 import io.javalin.Javalin
 import java.util.*
 
 object PostRouter {
 	@JvmStatic
 	fun accept(app: Javalin) {
-		app.get("/api/posts/:name") {
+		app.get(API_CATEGORIES_POSTS) {
+			it.json(PostLoader.getCategories())
+		}
+		app.get(API_POSTS_NAME) {
 			val name = it.pathParam("name")
 			val entry = PostLoader.name2Entry[name]
 			it.contentType(JSON)
@@ -18,6 +19,9 @@ object PostRouter {
 				it.json(createError(NOT_FOUND_404, "Post $name not found"))
 				it.status(NOT_FOUND_404)
 			})
+		}
+		app.get(API_POSTS) {
+			it.json(PostLoader.name2Entry.keys)
 		}
 		app.get("/posts/:name") {
 			val name = it.pathParam("name")
