@@ -1,18 +1,20 @@
 package io.github.candorpost.web
 
 import io.github.candorpost.web.client.ControlPanel
+import io.github.candorpost.web.resource.PostLoader
 import io.github.candorpost.web.resource.ResourceLoader
 import io.github.candorpost.web.resource.StoryLoader
+import io.github.candorpost.web.resource.objectMapper
 import io.github.candorpost.web.route.DebugRouter
 import io.github.candorpost.web.route.ErrorRouter
+import io.github.candorpost.web.route.PostRouter
 import io.github.candorpost.web.route.StoryRouter
-import io.github.candorpost.web.util.NOT_FOUND_404
 import io.javalin.Javalin
+import io.javalin.plugin.json.JavalinJackson
 import joptsimple.OptionParser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.GraphicsEnvironment
-import java.util.*
 
 private lateinit var app: Javalin
 val logger: Logger = LoggerFactory.getLogger("News")
@@ -43,11 +45,14 @@ fun main(args: Array<String>) {
 		}.run()
 	}
 	val port = optionSet.valueOf(portSpec).toInt()
+	JavalinJackson.configure(objectMapper)
 	ResourceLoader.addListener(StoryLoader)
+	ResourceLoader.addListener(PostLoader)
 	ResourceLoader.reload()
 	app = Javalin.create()
 	DebugRouter.accept(app)
 	ErrorRouter.accept(app)
 	StoryRouter.accept(app)
+	PostRouter.accept(app)
 	app.start(port)
 }
