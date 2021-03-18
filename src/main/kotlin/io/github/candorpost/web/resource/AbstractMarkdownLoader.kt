@@ -2,11 +2,11 @@ package io.github.candorpost.web.resource
 
 import com.fasterxml.jackson.databind.ObjectReader
 import io.github.candorpost.web.debugMode
+import io.github.candorpost.web.logger
 import java.io.StringWriter
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
-import kotlin.io.path.exists
 
 abstract class AbstractMarkdownLoader(private val dirName: String, private val thingName: String): ReloadListener {
 	val name2Entry: MutableMap<String, Entry> = HashMap()
@@ -23,21 +23,22 @@ abstract class AbstractMarkdownLoader(private val dirName: String, private val t
 			return
 		}
 		Files.list(storiesDir)
-			.filter { it.toString().endsWith("md") }
+			.filter { Files.isDirectory(it) }
 			.forEach {
 				val writer = StringWriter()
 				val str = it.toFile().nameWithoutExtension
-				val configPath = it.parent.resolve("$str.json")
-				if (Files.exists(configPath)) {
+				val configPath = it.resolve("$str.json")
+				val mdPath = it.resolve("$str.md")
+				if (Files.exists(configPath) && Files.exists(mdPath)) {
 					val config = objectReader.readValue<Config>(configPath.toFile())
-					markdown.transform(Files.newBufferedReader(it), writer)
+					markdown.transform(Files.newBufferedReader(mdPath), writer)
 					name2Entry.put(str, Entry(str, config, writer.toString()))
 					if (debugMode) {
-						println("Loaded $thingName $str in $it")
+						logger.info("Loaded $thingName $str in $it")
 					}
 				} else {
 					if (debugMode) {
-						println("Found $thingName $str without config json in $it")
+						logger.warn("Missing files in $it")
 					}
 				}
 			}
