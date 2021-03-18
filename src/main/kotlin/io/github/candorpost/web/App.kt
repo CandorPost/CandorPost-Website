@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
 	app.get("/") {
 		logger.info("Received request")
 	}
-	app.get("/stories/:name") {
+	app.get("/api/stories/:name") {
 		val name = it.pathParam("name")
 		val html = ResourceLoader.name2html[name]
 		Optional.ofNullable(html).ifPresentOrElse( { str -> it.html(str) }, { it.status(404) })

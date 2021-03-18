@@ -317,3 +317,6 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
+
+run
+logs
