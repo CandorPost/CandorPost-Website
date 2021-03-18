@@ -1,6 +1,8 @@
 package io.github.candorpost.web
 
 import io.github.candorpost.web.client.ControlPanel
+import io.github.candorpost.web.resource.ResourceLoader
+import io.github.candorpost.web.resource.StoryLoader
 import io.github.candorpost.web.util.NOT_FOUND_404
 import io.javalin.Javalin
 import joptsimple.OptionParser
@@ -38,6 +40,7 @@ fun main(args: Array<String>) {
 		}.run()
 	}
 	val port = optionSet.valueOf(portSpec).toInt()
+	ResourceLoader.addListener(StoryLoader)
 	ResourceLoader.reload()
 	app = Javalin.create().start(port)
 	app.get("/") {
@@ -45,7 +48,7 @@ fun main(args: Array<String>) {
 	}
 	app.get("/api/stories/:name") {
 		val name = it.pathParam("name")
-		val html = ResourceLoader.name2html[name]
+		val html = StoryLoader.name2html[name]
 		Optional.ofNullable(html).ifPresentOrElse( { str -> it.html(str) }, { it.status(404) })
 		if (html != null) it.html(html)
 		else it.status(NOT_FOUND_404)

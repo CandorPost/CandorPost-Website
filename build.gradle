@@ -33,10 +33,6 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 }
 
-File runningDir = project.rootDir.toPath().resolve("run").toFile()
-runningDir.mkdirs()
-tasks.run.workingDir = runningDir
-
 application {
     mainClass = 'io.github.candorpost.web.AppKt'
 }

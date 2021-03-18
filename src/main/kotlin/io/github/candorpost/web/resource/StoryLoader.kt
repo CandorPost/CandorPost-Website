@@ -1,18 +1,16 @@
-package io.github.candorpost.web
+package io.github.candorpost.web.resource
 
-import org.tautua.markdownpapers.Markdown
+import io.github.candorpost.web.debugMode
 import java.io.StringWriter
 import java.nio.file.Files
-import java.nio.file.Paths
+import java.nio.file.Path
 import java.util.*
 
-object ResourceLoader {
-	private val markdown: Markdown = Markdown()
+object StoryLoader: ReloadListener {
 	val name2html: MutableMap<String, String> = HashMap()
 
-	@JvmStatic
-	fun reload() {
-		val storiesDir = Paths.get(".").resolve("stories")
+	override fun reload(resourceDir: Path) {
+		val storiesDir = resourceDir.resolve("stories")
 		if (!Files.exists(storiesDir)) {
 			return
 		}

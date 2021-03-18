@@ -1,0 +1,3 @@
+[submodule "Pages"]
+	path = Pages
+	url = https://github.com/CandorPost/Pages.git
