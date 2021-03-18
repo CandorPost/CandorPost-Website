@@ -35,6 +35,10 @@ abstract class AbstractMarkdownLoader(private val dirName: String, private val t
 					if (debugMode) {
 						println("Loaded $thingName $str in $it")
 					}
+				} else {
+					if (debugMode) {
+						println("Found $thingName $str without config json in $it")
+					}
 				}
 			}
 	}

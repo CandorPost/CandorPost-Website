@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 import java.awt.GraphicsEnvironment
 
 private lateinit var app: Javalin
-val logger: Logger = LoggerFactory.getLogger("News")
+val logger: Logger = LoggerFactory.getLogger("CandorPost")
 var debugMode: Boolean = false
 
 @Synchronized
