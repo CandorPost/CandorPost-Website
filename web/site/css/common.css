@@ -1,6 +1,30 @@
 @import "bootstrap.min.css";
 
+/*noinspection CssUnknownTarget*/
 @font-face {
-    font-family: myFirstFont;
-    src: url(../assets/albertus_medium.ttf);
+    font-family: albertus;
+    src: url(site/assets/albertus_medium.ttf);
+}
+
+body {
+    font-family: Georgia, serif
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+        top: 5rem;
+    }
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link .feather {
+    margin-right: 4px;
 }
