@@ -1,0 +1,6 @@
+@import "bootstrap.min.css";
+
+@font-face {
+    font-family: myFirstFont;
+    src: url(../assets/albertus_medium.ttf);
+}

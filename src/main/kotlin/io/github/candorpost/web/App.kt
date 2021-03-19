@@ -1,6 +1,7 @@
 package io.github.candorpost.web
 
 import io.github.candorpost.web.client.ControlPanel
+import io.github.candorpost.web.resource.SiteLoader
 import io.github.candorpost.web.resource.md.PostLoader
 import io.github.candorpost.web.resource.ResourceLoader
 import io.github.candorpost.web.resource.md.StoryLoader
@@ -59,12 +60,14 @@ fun main(args: Array<String>) {
 	JavalinJackson.configure(objectMapper)
 	ResourceLoader.addListener(StoryLoader)
 	ResourceLoader.addListener(PostLoader)
+	ResourceLoader.addListener(SiteLoader)
 	ResourceLoader.reload()
 	app = Javalin.create()
 	ApiRoutesRouter.accept(app)
 	DebugRouter.accept(app)
 	ErrorRouter.accept(app)
-	StoryRouter.accept(app)
+	MainRouter.accept(app)
 	PostRouter.accept(app)
+	StoryRouter.accept(app)
 	app.start(port)
 }

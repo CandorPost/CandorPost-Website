@@ -17,6 +17,7 @@ abstract class AbstractMarkdownLoader(private val dirName: String, private val t
 	private val objectReader: ObjectReader = objectMapper.readerFor(Config::class.java)
 
 	override fun reload(resourceDir: Path) {
+		name2Entry.clear()
 		val storiesDir = resourceDir.resolve(dirName)
 		if (!Files.exists(storiesDir)) {
 			return
